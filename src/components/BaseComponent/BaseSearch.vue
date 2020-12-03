@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="search-area">
     <template v-for="(val,key) in searchForm">
       <div :key="key">
         <div>{{ val.label }}</div>
@@ -38,8 +38,10 @@
         </template>
       </div>
     </template>
-    <el-button type="primary" @click="search()">查询</el-button>
-    <el-button type="primary" @click="reset()">重置</el-button>
+    <div>
+      <el-button type="primary" @click="search()">查询</el-button>
+      <el-button type="primary" @click="reset()">重置</el-button>
+    </div>
   </div>
 </template>
 
@@ -62,8 +64,7 @@ export default {
   },
   data () {
     return {
-      form: {},
-      state: true// 节流使用
+      form: {}
     }
   },
   methods: {
@@ -96,11 +97,7 @@ export default {
         console.log('filterData', filterData)
         this.$emit('handleSearchData', filterData)
       } catch (e) {
-        if (this.state) {
-          this.state = false
-          this.$message.error(e.message)
-          setTimeout(() => { this.state = true }, 2000)
-        }
+        this.$message.error(e.message)
       }
     },
     reset () {
@@ -112,6 +109,18 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.search-area{
+  margin: 10px;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  & > div{
+    font-weight: bolder;
+    text-align: left;
+    margin: 5px;
+  }
+}
 </style>
