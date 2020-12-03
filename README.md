@@ -1,24 +1,24 @@
-# vue-ui
+# BaseSearch
+基础的查询组件
+接收两个参数
+searchForm
+sourceData
 
-## Project setup
-```
-yarn install
-```
+**Attributes**
 
-### Compiles and hot-reloads for development
-```
-yarn serve
-```
+|  参数	   | 说明  |类型|默认值
+|  ----  | ----  |----|----|
+| searchForm  | 单元格 |Object|{}|
+| sourceData  | 单元格 |Array|[]|
 
-### Compiles and minifies for production
-```
-yarn build
-```
 
-### Lints and fixes files
+```typescript
+enum TypeEnum { 'text', 'select', 'timeLimit', 'timeBefore' }
+enum FormatEnum { 'yyyy/MM/dd hh:mm', 'yyyy/MM/dd' }
+interface SearchAttr {
+    label: string
+    type: TypeEnum
+    format: FormatEnum
+    verify(attrVal: Array<Date> | String): void
+}
 ```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

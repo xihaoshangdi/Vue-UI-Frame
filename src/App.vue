@@ -1,136 +1,232 @@
 <template>
   <div id="app">
-    <BaseForm :form-data="xxx" :form-hash="hash" />
+    <base-search
+      :search-form="searchForm"
+      :source-data="sourceData"
+      @handleSearchData="handlePageData"
+    />
+    <base-table
+      ref="baseTable"
+      :table-data="tableData"
+      :config="config"
+      @handleEdit="handleTableEdit"
+      @handleDelete="handleTableDelete"
+    />
+    <el-pagination
+      :current-page.sync="currentPage"
+      :page-size="pageSize"
+      :total="total"
+      layout="total, prev, pager, next"
+    />
+    <el-button type="primary" @click="insertInfo">新建</el-button>
+    <el-button type="primary" @click="batchDelet">删除</el-button>
   </div>
 </template>
 
 <script>
-import BaseForm from './components/BaseForm.vue'
+import BaseSearch from '@/components/BaseSearch'
+import BaseTable from '@/components/BaseTable'
 
 export default {
   name: 'App',
   components: {
-    BaseForm
+    BaseTable,
+    BaseSearch
   },
   data () {
     return {
-      xxx: {
-        AIRCRAFT_MODEL: '',
-        AIRCRAFT_REGISTRATION_NUMBER: '',
-        NATIONALITY: '',
-        OWNED_COMPANY: '',
-        AIRCRAFT_AGE: '',
-        ENGINE_RUNNING_TIME: '',
-        MEL: '',
-        AIRBORNE_EQUIPMENT: [],
-        CRUISE_SPEED: '',
-        AIRCRAFT_STATUS: '',
-        MAINTENANCE_REQUIREMENTS: '',
-        CURRENT_AIRPORT: '',
-        PLANE_COLOUR: '',
-        MAX_VOYAGE_TIME: '',
-        MAX_VOYAGE_KM: '',
-        MAX_FLY_KG: '',
-        PRACTICAL_CEIL: ''
-      },
-      hash: {
+      // BaseSearch
+      searchForm: {
+        JOB_DATE: {
+          label: '计划日期',
+          type: 'timeLimit',
+          format: 'yyyy/MM/dd hh:mm'
+        },
+        PLAN_TYPE: {
+          label: '计划类型',
+          type: 'text',
+          vague: true
+        },
         AIRCRAFT_MODEL: {
           label: '机型',
-          type: 'text'
+          type: 'text',
+          vague: false
         },
-        AIRCRAFT_REGISTRATION_NUMBER: {
-          label: '登记号',
-          type: 'text'
-        },
-        NATIONALITY: {
-          label: '国籍',
-          type: 'text'
-        },
-        OWNED_COMPANY: {
-          label: '所属公司',
-          type: 'text'
-        },
-        AIRCRAFT_AGE: {
-          label: '机龄',
-          type: 'text'
-        },
-        ENGINE_RUNNING_TIME: {
-          label: '发动机运转时间',
-          type: 'text'
-        },
-        MEL: {
-          label: 'MEL/CDL',
-          type: 'text'
-        },
-        AIRBORNE_EQUIPMENT: {
-          label: '机载设备',
-          type: 'checkbox',
-          options: [{
-            value: '选项1',
-            label: '黄金糕'
-          }, {
-            value: '选项2',
-            label: '双皮奶'
-          }, {
-            value: '选项3',
-            label: '蚵仔煎'
-          }, {
-            value: '选项4',
-            label: '龙须面'
-          }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }]
-        },
-        CRUISE_SPEED: {
-          label: '巡航速度',
-          type: 'text'
-        },
-        MAINTENANCE_REQUIREMENTS: {
-          label: '维修需求',
-          type: 'text'
-        },
-        CURRENT_AIRPORT: {
-          label: '当前所在机场',
+        ALTERNATE_AIRPORT: {
+          label: '备降机场',
           type: 'radio',
           options: [{
-            value: '选项1',
-            label: '黄金糕'
+            value: '密云机场',
+            label: '密云机场'
           }, {
-            value: '选项2',
-            label: '双皮奶'
+            value: '黄埔机场',
+            label: '黄埔机场'
           }, {
-            value: '选项3',
-            label: '蚵仔煎'
+            value: '井冈山机场',
+            label: '井冈山机场'
           }, {
-            value: '选项4',
-            label: '龙须面'
+            value: '秦皇岛机场',
+            label: '秦皇岛机场'
           }, {
-            value: '选项5',
-            label: '北京烤鸭'
-          }]
+            value: '天津机场',
+            label: '天津机场'
+          }],
+          vague: false
         },
-        PLANE_COLOUR: {
-          label: '飞机颜色',
-          type: 'text'
-        },
-        MAX_VOYAGE_TIME: {
-          label: '最大航程(时间)',
-          type: 'duration'
-        },
-        MAX_VOYAGE_KM: {
-          label: '最大航程(千米)',
-          type: 'text'
-        },
-        MAX_FLY_KG: {
-          label: '最大起飞重量（千克）',
-          type: 'text'
-        },
-        PRACTICAL_CEIL: {
-          label: '实用升限(米)',
-          type: 'text'
+        ESTIMATE_LAUNCH_TIME: {
+          label: '起飞时间',
+          type: 'timeBefore',
+          format: 'yyyy/MM/dd hh:mm'
         }
-      }
+      }, // 查询的表单对象
+      sourceData: [
+        {
+          JOB_DATE: '2020/12/02 16:44',
+          PLAN_TYPE: '小型飞行器飞行',
+          AIRCRAFT_MODEL: 'GMZ-1',
+          ALTERNATE_AIRPORT: '天津机场',
+          ESTIMATE_LAUNCH_TIME: '2020/12/02'
+        },
+        {
+          JOB_DATE: '2020/12/01 15:44',
+          PLAN_TYPE: '直升机水上平台作业',
+          AIRCRAFT_MODEL: 'GDL-2',
+          ALTERNATE_AIRPORT: '密云机场',
+          ESTIMATE_LAUNCH_TIME: '2020/12/05'
+        },
+        {
+          JOB_DATE: '2020/11/25 08:24',
+          PLAN_TYPE: '直升机机外载荷作业',
+          AIRCRAFT_MODEL: 'POL-9',
+          ALTERNATE_AIRPORT: '井冈山机场',
+          ESTIMATE_LAUNCH_TIME: '2020/12/03'
+        },
+        {
+          JOB_DATE: '2020/11/29 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '井冈山机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/29'
+        },
+        {
+          JOB_DATE: '2020/12/09 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '秦皇岛机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/28'
+        }
+      ], // 数据库的全部数据
+      // BaseTable
+      pageData: [
+        {
+          JOB_DATE: '2020/12/02 16:44',
+          PLAN_TYPE: '小型飞行器飞行',
+          AIRCRAFT_MODEL: 'GMZ-1',
+          ALTERNATE_AIRPORT: '天津机场',
+          ESTIMATE_LAUNCH_TIME: '2020/12/02'
+        },
+        {
+          JOB_DATE: '2020/12/01 15:44',
+          PLAN_TYPE: '直升机水上平台作业',
+          AIRCRAFT_MODEL: 'GDL-2',
+          ALTERNATE_AIRPORT: '密云机场',
+          ESTIMATE_LAUNCH_TIME: '2020/12/05'
+        },
+        {
+          JOB_DATE: '2020/11/25 08:24',
+          PLAN_TYPE: '直升机机外载荷作业',
+          AIRCRAFT_MODEL: 'POL-9',
+          ALTERNATE_AIRPORT: '井冈山机场',
+          ESTIMATE_LAUNCH_TIME: '2020/12/03'
+        },
+        {
+          JOB_DATE: '2020/11/29 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '井冈山机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/29'
+        },
+        {
+          JOB_DATE: '2020/12/09 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '秦皇岛机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/28'
+        },
+        {
+          JOB_DATE: '2020/12/09 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '秦皇岛机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/28'
+        },
+        {
+          JOB_DATE: '2020/12/09 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '秦皇岛机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/28'
+        },
+        {
+          JOB_DATE: '2020/12/09 08:24',
+          PLAN_TYPE: '农林喷洒作业',
+          AIRCRAFT_MODEL: 'PRG-2',
+          ALTERNATE_AIRPORT: '秦皇岛机场',
+          ESTIMATE_LAUNCH_TIME: '2020/11/28'
+        }
+      ], // 页面内的全部数据
+      config: [
+        {
+          'prop': 'JOB_DATE',
+          'label': '计划日期'
+        },
+        {
+          'prop': 'PLAN_TYPE',
+          'label': '计划类型'
+        },
+        {
+          'prop': 'AIRCRAFT_MODEL',
+          'label': '机型'
+        },
+        {
+          'prop': 'ALTERNATE_AIRPORT',
+          'label': '备降机场'
+        },
+        {
+          'prop': 'ESTIMATE_LAUNCH_TIME',
+          'label': '起飞时间'
+        }
+      ], // 渲染的表头
+      // BasePager
+      currentPage: 1, // 当前页码
+      total: 8, // 总数
+      pageSize: 5 // 每页个数
+    }
+  },
+  computed: {
+    tableData () {
+      const start = (this.currentPage - 1) * this.pageSize
+      const end = (this.currentPage) * this.pageSize
+      return this.pageData.filter((item, index) => index >= start && index < end)
+    }
+  },
+  methods: {
+    handlePageData (data) {
+      this.currentPage = 1
+      this.total = data.length
+      this.pageData = data
+    },
+    handleTableEdit (data) {
+      this.$emit('handleEditInfo', data)
+    },
+    handleTableDelete (data) {
+      this.$emit('handleDeleteInfo', data)
+    },
+    insertInfo () {
+      this.$emit('insertInfo')
+    },
+    batchDelet () {
+      this.$emit('batchDelet', this.$refs.baseTable.multipleSelection)
     }
   }
 }

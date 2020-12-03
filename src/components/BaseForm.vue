@@ -1,14 +1,26 @@
 <template>
   <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
-    <template v-for="(val,key) in formData" class="xxx">
-      <el-form-item v-if="formHash[key]" :key="key" :label="formHash[key].label">
+    <template v-for="(val,key) in formData">
+      <el-form-item
+        v-if="formHash[key]"
+        :key="key"
+        :label="formHash[key].label"
+      >
         <!--普通文本-->
         <template v-if="formHash[key].type==='text'">
-          <el-input v-model="form[key]" />
+          <el-input
+            v-model="form[key]"
+            :disabled="formHash[key].disabled"
+          />
         </template>
         <!--单选-->
         <template v-else-if="formHash[key].type==='radio'">
-          <el-select v-model="form[key]" clearable placeholder="请选择">
+          <el-select
+            v-model="form[key]"
+            :disabled="formHash[key].disabled"
+            clearable
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in formHash[key].options"
               :key="item.value"
@@ -19,7 +31,13 @@
         </template>
         <!--多选-->
         <template v-else-if="formHash[key].type==='checkbox'">
-          <el-select v-model="form[key]" clearable multiple placeholder="请选择">
+          <el-select
+            v-model="form[key]"
+            :disabled="formHash[key].disabled"
+            clearable
+            multiple
+            placeholder="请选择"
+          >
             <el-option
               v-for="item in formHash[key].options"
               :key="item.value"
@@ -32,6 +50,7 @@
         <template v-else-if="formHash[key].type==='datetime'">
           <el-date-picker
             v-model="form[key]"
+            :disabled="formHash[key].disabled"
             type="datetime"
             format="yyyy-MM-dd HH:mm"
             value-format="yyyy-MM-dd HH:mm"
@@ -41,6 +60,7 @@
         <template v-else-if="formHash[key].type==='duration'">
           <el-time-picker
             v-model="form[key]"
+            :disabled="formHash[key].disabled"
             format="HH:mm"
             value-format="HH:mm"
             placeholder="请输入时间"
@@ -48,6 +68,7 @@
         </template>
       </el-form-item>
     </template>
+    <el-button type="primary" @click="verify">提交</el-button>
   </el-form>
 </template>
 
@@ -63,6 +84,10 @@ export default {
     formHash: {
       type: Object,
       default: () => {}
+    },
+    verifyForm: {
+      type: Function,
+      default: () => {}
     }
   },
   data () {
@@ -72,9 +97,28 @@ export default {
     }
   },
   created () {
-    this.form = Object.assign({}, this.formData)
+    const formHash = this.formHash
+    const obj = Object.assign({}, this.formData)
+    const handler = {
+      set: function name (obj, prop, value) {
+        obj[prop] = value
+        if (formHash[prop].value) formHash[prop].value(obj)
+        return true
+      }
+    }
+    this.form = new Proxy(obj, handler)
   },
   methods: {
+    verify () {
+      try {
+        Object.keys(this.form).forEach(element => {
+          if (this.formHash[element].required && this.form[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
+        })
+        this.verifyForm(this.form)
+      } catch (e) {
+        this.$message.error(e.message)
+      }
+    }
   }
 }
 </script>
@@ -86,8 +130,16 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 20px;
+  padding: 20px;
+  font-size: 14px;
+  font-family: PingFang-SC;
+  font-weight: bold;
+  color: #3b5681;
+  max-width: 700px;
 }
-.xxx{
-  border: 1px solid red;
+.el-form-item{
+  .el-select,.el-input{
+    width: 100%;
+  }
 }
 </style>
