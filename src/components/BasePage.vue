@@ -90,6 +90,12 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.operate{
+  border: 1px solid red;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-left: 20px;
+}
 </style>

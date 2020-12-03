@@ -72,8 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.page {
-  display: flex;
-  justify-content: flex-end;
+.el-button{
+  border: 1px solid red;
 }
 </style>
