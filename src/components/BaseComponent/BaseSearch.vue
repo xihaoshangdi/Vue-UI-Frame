@@ -81,7 +81,7 @@ export default {
             switch (type) {
               case 'text':
               case 'radio':
-                return vague ? bar[attr].includes(this.form[attr]) : bar[attr] === this.form[attr]
+                return vague ? String(bar[attr]).includes(this.form[attr]) : String(bar[attr]) === String(this.form[attr])
               case 'timeBefore':
                 return dayjs(bar[attr]).isBefore(this.form[attr])
               case 'timeLimit': {

@@ -64,9 +64,9 @@ export default {
     // 赋值选中的数组
     handleSelectionChange (val) { this.multipleSelection = val },
     // 编辑
-    handleEdit (index, row) { this.$emit('editPopup', row) },
+    handleEdit (index, row) { this.$emit('handleEdit', row) },
     // 删除
-    handleDelete (index, row) { this.$emit('deleteInfo', row) }
+    handleDelete (index, row) { this.$emit('handleDelete', row) }
   }
 }
 </script>

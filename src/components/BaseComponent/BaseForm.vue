@@ -52,8 +52,8 @@
             v-model="form[key]"
             :disabled="formHash[key].disabled"
             type="datetime"
-            format="yyyy-MM-dd HH:mm"
-            value-format="yyyy-MM-dd HH:mm"
+            :format="val.format"
+            :value-format="val.format"
           />
         </template>
         <!--时间-->
@@ -68,7 +68,10 @@
         </template>
       </el-form-item>
     </template>
-    <el-button type="primary" @click="verify">提交</el-button>
+    <template v-show="handle">
+      <el-button type="primary" @click="verify">确认</el-button>
+      <el-button type="primary" @click="cancel">取消</el-button>
+    </template>
   </el-form>
 </template>
 
@@ -76,6 +79,10 @@
 export default {
   name: 'BaseForm',
   props: {
+    handle: {
+      type: Boolean,
+      default: true
+    },
     formData: {
       // 表单的数据
       type: Object,
@@ -111,14 +118,19 @@ export default {
   methods: {
     verify () {
       try {
-        Object.keys(this.form).forEach(element => {
+        Object.keys(this.formHash).forEach(element => {
           if (this.formHash[element].required && this.form[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
         })
-        this.verifyForm(this.form)
+        const temp = {}
+        Object.assign(temp, this.form) // 获取代理的原始对象form
+        const form = JSON.parse(JSON.stringify(temp)) // 对form进行深拷贝
+        this.verifyForm(form)
+        this.$emit('confirm', form)
       } catch (e) {
         this.$message.error(e.message)
       }
-    }
+    },
+    cancel () { this.$emit('cancel') }
   }
 }
 </script>

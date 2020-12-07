@@ -53,11 +53,9 @@ export default {
   },
   data () {
     return {
-      //
       pageData: [],
       // BasePager
       currentPage: 1, // 当前页码
-      total: 8, // 总数
       pageSize: 5 // 每页个数
     }
   },
@@ -66,12 +64,20 @@ export default {
       const start = (this.currentPage - 1) * this.pageSize
       const end = (this.currentPage) * this.pageSize
       return this.pageData.filter((item, index) => index >= start && index < end)
+    },
+    total () {
+      return this.pageData.length
+    }
+  },
+  watch: {
+    sourceData: {
+      handler (val) { this.pageData = val },
+      immediate: true
     }
   },
   methods: {
     handlePageData (data) {
       this.currentPage = 1
-      this.total = data.length
       this.pageData = data
     },
     handleTableEdit (data) {

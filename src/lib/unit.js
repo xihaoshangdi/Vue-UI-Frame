@@ -41,3 +41,15 @@ export const checkObjNull = function (object) {
   })
   return { Status: attrList.length !== 0, NullabilityList: attrList, NonEmptyObj: obj }
 }
+
+/**
+ *
+ * @desc 节流封装函数
+ * @method throttle
+ * @param {Function} fn 节流函数
+ * @param {Function} delay 延时
+ * @return {function(): void} 返回数组表示空属性集合,
+ */
+export function throttle (fn, delay) {
+
+}
