@@ -1,17 +1,26 @@
 <template>
-  <base-page :search-form="searchForm" :source-data="sourceData" :config="config" />
-<!--  <base-form form-data="" form-hash="" verify-form="" />-->
+  <div id="app">
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="表单组件" name="form">
+        <Form />
+      </el-tab-pane>
+      <el-tab-pane label="页面组件" name="search">配置管理</el-tab-pane>
+      <el-tab-pane label="角色管理" name="third">角色管理</el-tab-pane>
+      <el-tab-pane label="定时任务补偿" name="fourth">定时任务补偿</el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <script>
 
-import BasePage from '@/components/BasePage'
-
+import Form from '@/View/Form'
 export default {
   name: 'App',
-  components: { BasePage },
+  components: { Form },
   data () {
     return {
+      //
+      activeName: 'form',
       // BaseSearch
       searchForm: {
         JOB_DATE: {
@@ -124,12 +133,4 @@ export default {
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
 </style>

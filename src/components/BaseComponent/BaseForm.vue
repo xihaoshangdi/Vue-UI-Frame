@@ -50,10 +50,10 @@
         <template v-else-if="formHash[key].type==='datetime'">
           <el-date-picker
             v-model="form[key]"
-            :disabled="formHash[key].disabled"
             type="datetime"
-            :format="val.format"
-            :value-format="val.format"
+            :disabled="formHash[key].disabled"
+            :format="formHash[key].format"
+            :value-format="formHash[key].valueFormat"
           />
         </template>
         <!--时间-->
@@ -105,11 +105,12 @@ export default {
   },
   created () {
     const formHash = this.formHash
+    const that = this
     const obj = Object.assign({}, this.formData)
     const handler = {
       set: function name (obj, prop, value) {
         obj[prop] = value
-        if (formHash[prop].value) formHash[prop].value(obj)
+        if (formHash[prop].correlate) formHash[prop].correlate(that.form)
         return true
       }
     }
