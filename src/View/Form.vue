@@ -19,7 +19,7 @@ export default {
     return {
       formData: {
         name: '',
-        birth: '',
+        birth: '2020/12/10 00:00:00',
         constellation: '',
         week: '',
         age: '',
@@ -37,6 +37,7 @@ export default {
           required: true,
           format: 'yyyy/MM/dd HH:mm:ss',
           valueFormat: 'yyyy/MM/dd HH:mm:ss',
+          dependProp: ['constellation', 'week', 'age'],
           correlate: (data) => {
             const brith = new Date(data.birth)
             data.constellation = this.getAstro(brith.getMonth() + 1, brith.getDay())
@@ -57,6 +58,7 @@ export default {
         age: {
           label: '年龄',
           type: 'text',
+          dependProp: ['education'],
           correlate: (data) => {
             if (data.age < 3) data.education = '家教'
             else if (data.age < 6)data.education = '幼稚园'
@@ -74,9 +76,7 @@ export default {
           disabled: true
         }
       },
-      verifyFn: () => { // 验证关联字段之间的关系
-
-      }
+      verifyFn: (data) => {}
     }
   },
   methods: {

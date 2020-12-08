@@ -53,3 +53,29 @@ export const checkObjNull = function (object) {
 export function throttle (fn, delay) {
 
 }
+
+/**
+ * @desc 环路检测方法
+ * @method dfs
+ * @param {Object} Adjacency 邻接表
+ * @return {Object} 返回结果集
+ */
+export function circuit (Adjacency) {
+  const stack = new Map()
+  const currentNode = Adjacency[0]
+  const dfs = (node) => {
+    const state = stack.get(node.name)
+    if (state) {
+      console.log('state', state)
+      throw new Error('------------')
+    }
+    stack.set(node.name, true)
+    node.status = true
+    for (let i = 0; i < node.node.length; i++) {
+      const reuslt = Adjacency.find(item => item.name === node.node[i])
+      if (reuslt) dfs(reuslt)
+    }
+    console.log('stack', stack)
+  }
+  dfs(currentNode)
+}
