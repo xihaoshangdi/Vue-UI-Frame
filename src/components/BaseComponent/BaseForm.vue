@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import { circuit } from '@/lib/unit'
 export default {
   name: 'BaseForm',
   props: {
@@ -105,17 +106,19 @@ export default {
   },
   created () {
     const formHash = this.formHash
-    this.check(formHash)
-    const that = this
-    const obj = Object.assign({}, this.formData)
-    const handler = {
-      set: function name (obj, prop, value) {
-        obj[prop] = value
-        if (formHash[prop].correlate) formHash[prop].correlate(that.form)
-        return true
+    const state = circuit(formHash)
+    if (state) {
+      const that = this
+      const obj = Object.assign({}, this.formData)
+      const handler = {
+        set: function name (obj, prop, value) {
+          obj[prop] = value
+          if (formHash[prop].correlate) formHash[prop].correlate(that.form)
+          return true
+        }
       }
+      this.form = new Proxy(obj, handler)
     }
-    this.form = new Proxy(obj, handler)
   },
   methods: {
     verify () {
@@ -132,44 +135,7 @@ export default {
         this.$message.error(e.message)
       }
     },
-    cancel () { this.$emit('cancel') },
-    check (formHash) {
-      const Adjacency = []
-      Object.keys(formHash).forEach(node => {
-        if (formHash[node].dependProp) {
-          Adjacency.push({
-            name: node,
-            node: formHash[node].dependProp
-          })
-        }
-      })
-      //
-      console.log('Adjacency', Adjacency)
-      const stack = new Map()
-      const currentNode = Adjacency[0]
-      console.log(currentNode, stack, Adjacency)
-      try {
-        this.dfs(currentNode, stack, Adjacency)
-      } catch (e) {
-        console.log(e)
-      }
-      console.log('stack', stack)
-    },
-    dfs (val, stack, Adjacency) {
-      const s = stack.get(val.name)
-      if (s) {
-        console.log('val', val)
-        throw new Error('------------')
-      }
-      stack.set(val.name, true)
-      val.status = true
-      for (let i = 0; i < val.node.length; i++) {
-        const reuslt = Adjacency.find(item => item.name === val.node[i])
-
-        if (reuslt) this.dfs(reuslt, stack, Adjacency)
-      }
-      console.log('stack', stack)
-    }
+    cancel () { this.$emit('cancel') }
   }
 }
 </script>
