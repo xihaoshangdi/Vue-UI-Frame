@@ -76,7 +76,7 @@
 </template>
 
 <script>
-import { circuit } from '@/lib/unit'
+import { checkObjNull, circuit } from '@/lib/unit'
 export default {
   name: 'BaseForm',
   props: {
@@ -118,6 +118,7 @@ export default {
         }
       }
       this.form = new Proxy(obj, handler)
+      Object.assign(this.form, checkObjNull(this.formData).NonEmptyObj)
     }
   },
   methods: {

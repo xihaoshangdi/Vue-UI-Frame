@@ -22,10 +22,7 @@ export default {
     return {
       //
       activeName: 'form'
-
     }
-  },
-  computed: {
   }
 }
 </script>
