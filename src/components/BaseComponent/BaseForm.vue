@@ -1,78 +1,87 @@
 <template>
-  <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
-    <template v-for="(val,key) in formData">
-      <el-form-item
-        v-if="formHash[key]"
-        :key="key"
-        :label="formHash[key].label"
-      >
-        <!--普通文本-->
-        <template v-if="formHash[key].type==='text'">
-          <el-input
-            v-model="form[key]"
-            :disabled="formHash[key].disabled"
-          />
-        </template>
-        <!--单选-->
-        <template v-else-if="formHash[key].type==='radio'">
-          <el-select
-            v-model="form[key]"
-            :disabled="formHash[key].disabled"
-            clearable
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in formHash[key].options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+  <div>
+    <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
+      <template v-for="(val,key) in formData">
+        <el-form-item
+          v-show="formHash[key].show||true"
+          v-if="formHash[key]"
+          :key="key"
+          :label="formHash[key].label"
+        >
+          <!--普通文本-->
+          <template v-if="formHash[key].type==='text'">
+            <el-input
+              v-show="formHash[key].show||true"
+              v-model="form[key]"
+              :disabled="formHash[key].disabled"
             />
-          </el-select>
-        </template>
-        <!--多选-->
-        <template v-else-if="formHash[key].type==='checkbox'">
-          <el-select
-            v-model="form[key]"
-            :disabled="formHash[key].disabled"
-            clearable
-            multiple
-            placeholder="请选择"
-          >
-            <el-option
-              v-for="item in formHash[key].options"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
+          </template>
+          <!--单选-->
+          <template v-else-if="formHash[key].type==='radio'">
+            <el-select
+              v-show="formHash[key].show||true"
+              v-model="form[key]"
+              :disabled="formHash[key].disabled"
+              clearable
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in formHash[key].options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
+          <!--多选-->
+          <template v-else-if="formHash[key].type==='checkbox'">
+            <el-select
+              v-show="formHash[key].show||true"
+              v-model="form[key]"
+              :disabled="formHash[key].disabled"
+              clearable
+              multiple
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in formHash[key].options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </template>
+          <!--日期-->
+          <template v-else-if="formHash[key].type==='datetime'">
+            <el-date-picker
+              v-show="formHash[key].show||true"
+              v-model="form[key]"
+              type="datetime"
+              :disabled="formHash[key].disabled"
+              :format="formHash[key].format"
+              :value-format="formHash[key].valueFormat"
             />
-          </el-select>
-        </template>
-        <!--日期-->
-        <template v-else-if="formHash[key].type==='datetime'">
-          <el-date-picker
-            v-model="form[key]"
-            type="datetime"
-            :disabled="formHash[key].disabled"
-            :format="formHash[key].format"
-            :value-format="formHash[key].valueFormat"
-          />
-        </template>
-        <!--时间-->
-        <template v-else-if="formHash[key].type==='duration'">
-          <el-time-picker
-            v-model="form[key]"
-            :disabled="formHash[key].disabled"
-            format="HH:mm"
-            value-format="HH:mm"
-            placeholder="请输入时间"
-          />
-        </template>
-      </el-form-item>
-    </template>
-    <template v-show="handle">
+          </template>
+          <!--时间-->
+          <template v-else-if="formHash[key].type==='duration'">
+            <el-time-picker
+              v-show="formHash[key].show||true"
+              v-model="form[key]"
+              :disabled="formHash[key].disabled"
+              format="HH:mm"
+              value-format="HH:mm"
+              placeholder="请输入时间"
+            />
+          </template>
+        </el-form-item>
+      </template>
+    </el-form>
+    <div v-show="handle" class="operate">
       <el-button type="primary" @click="verify">确认</el-button>
       <el-button type="primary" @click="cancel">取消</el-button>
-    </template>
-  </el-form>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -106,6 +115,7 @@ export default {
   },
   created () {
     const formHash = this.formHash
+
     const state = circuit(formHash)
     if (state) {
       const that = this
@@ -143,7 +153,6 @@ export default {
 
 <style scoped lang="scss">
 .container {
-  border: 1px solid red;
   text-align: left;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -154,6 +163,11 @@ export default {
   font-weight: bold;
   color: #3b5681;
   max-width: 700px;
+}
+.operate{
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .el-form-item{
   .el-select,.el-input{

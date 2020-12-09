@@ -23,7 +23,8 @@ export default {
         constellation: '',
         week: '',
         age: '',
-        education: ''
+        education: '',
+        adult: '成人'
       },
       formHash: {
         name: {
@@ -74,6 +75,12 @@ export default {
           label: '学历',
           type: 'text',
           disabled: true
+        },
+        adult: {
+          label: '身份',
+          type: 'text',
+          disabled: true,
+          show: false
         }
       },
       verifyFn: (data) => {}
