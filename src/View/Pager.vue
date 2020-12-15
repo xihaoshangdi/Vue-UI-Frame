@@ -1,16 +1,25 @@
 <template>
   <div>
-    <base-search :search-form="searchForm" :source-data="sourceData">
-      <template v-slot="{scope}">
-        <div>{{ scope }}</div>
-        <el-input v-model="scope.form[scope.key]" placeholder="请输入内容" />
-      </template>
-    </base-search>
-    <base-table :table-data="pageData" :config="config">
-      <template #PLAN_TYPE>
-        <el-table-column>
+    <base-search
+      :search-form="searchForm"
+      :source-data="sourceData"
+      @handleSearchData="handlePageData"
+      @handleResetData="handleResetData"
+    />
+    <base-table
+      ref="baseTable"
+      :table-data="pageData"
+      :config="config"
+    >
+      <template #special>
+        <el-table-column
+          key="special"
+          prop="special"
+          label="特殊处理"
+        >
           <template slot-scope="{row,$index}">
-            <div>{{ row }}-{{ $index }}</div>
+            <el-button @click="handleTableEdit(row,$index)">编辑</el-button>
+            <el-button @click="handleTableDelete(row,$index)">删除</el-button>
           </template>
         </el-table-column>
       </template>
@@ -32,111 +41,89 @@ export default {
   components: { BaseTable, BaseSearch },
   data () {
     return {
-      xxx: '',
+      sourceData: [
+        {
+          date: '2016-05-02',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1518 弄',
+          food: '黄金糕'
+        }, {
+          date: '2016-05-04',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1517 弄',
+          food: '双皮奶'
+        }, {
+          date: '2016-05-01',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1519 弄',
+          food: '蚵仔煎'
+        }, {
+          date: '2016-05-03',
+          name: '王小虎',
+          address: '上海市普陀区金沙江路 1516 弄',
+          food: '龙须面'
+        }
+      ], // SourceData 数据库的全部数据
       // BaseSearch
-      searchForm: {
-        JOB_DATE: {
-          label: '计划日期',
+      searchForm: { // 查询的表单对象
+        date: {
+          label: '日期',
           type: 'timeLimit',
           format: 'yyyy/MM/dd hh:mm'
         },
-        PLAN_TYPE: {
-          label: '计划类型',
+        name: {
+          label: '姓名',
           type: 'text',
           vague: true
         },
-        AIRCRAFT_MODEL: {
-          label: '机型',
+        address: {
+          label: '地址',
           type: 'text',
-          vague: false
+          vague: true
         },
-        ALTERNATE_AIRPORT: {
-          label: '备降机场',
+        food: {
+          label: '食物',
           type: 'radio',
           options: [{
-            value: '密云机场',
-            label: '密云机场'
+            value: '黄金糕',
+            label: '黄金糕'
           }, {
-            value: '黄埔机场',
-            label: '黄埔机场'
+            value: '双皮奶',
+            label: '双皮奶'
           }, {
-            value: '井冈山机场',
-            label: '井冈山机场'
+            value: '蚵仔煎',
+            label: '蚵仔煎'
           }, {
-            value: '秦皇岛机场',
-            label: '秦皇岛机场'
+            value: '龙须面',
+            label: '龙须面'
           }, {
-            value: '天津机场',
-            label: '天津机场'
+            value: '北京烤鸭',
+            label: '北京烤鸭'
           }],
           vague: false
-        },
-        ESTIMATE_LAUNCH_TIME: {
-          label: '起飞时间',
-          type: 'timeBefore',
-          format: 'yyyy/MM/dd hh:mm'
-        },
-        YYYY: {
-          label: '发送时间范围',
-          type: 'duration',
-          vague: false,
-          format: 'hh:mm'
         }
-      }, // 查询的表单对象
-      sourceData: [
-        {
-          JOB_DATE: '2020/12/02 16:44',
-          PLAN_TYPE: '小型飞行器飞行',
-          AIRCRAFT_MODEL: 'GMZ-1',
-          ALTERNATE_AIRPORT: '天津机场',
-          ESTIMATE_LAUNCH_TIME: '2020/12/02'
-        },
-        {
-          JOB_DATE: '2020/12/01 15:44',
-          PLAN_TYPE: '直升机水上平台作业',
-          AIRCRAFT_MODEL: 'GDL-2',
-          ALTERNATE_AIRPORT: '密云机场',
-          ESTIMATE_LAUNCH_TIME: '2020/12/05'
-        },
-        {
-          JOB_DATE: '2020/11/25 08:24',
-          PLAN_TYPE: '直升机机外载荷作业',
-          AIRCRAFT_MODEL: 'POL-9',
-          ALTERNATE_AIRPORT: '井冈山机场',
-          ESTIMATE_LAUNCH_TIME: '2020/12/03'
-        },
-        {
-          JOB_DATE: '2020/11/29 08:24',
-          PLAN_TYPE: '农林喷洒作业',
-          AIRCRAFT_MODEL: 'PRG-2',
-          ALTERNATE_AIRPORT: '井冈山机场',
-          ESTIMATE_LAUNCH_TIME: '2020/11/29'
-        },
-        {
-          JOB_DATE: '2020/12/09 08:24',
-          PLAN_TYPE: '农林喷洒作业',
-          AIRCRAFT_MODEL: 'PRG-2',
-          ALTERNATE_AIRPORT: '秦皇岛机场',
-          ESTIMATE_LAUNCH_TIME: '2020/11/28'
-        }
-      ], // 数据库的全部数据
+      },
       // BaseTable
       config: [
         {
-          'prop': 'PLAN_TYPE',
-          'label': '计划类型'
+          'prop': 'date',
+          'label': '日期'
         },
         {
-          'prop': 'AIRCRAFT_MODEL',
-          'label': '机型'
+          'prop': 'name',
+          'label': '姓名'
         },
         {
-          'prop': 'ALTERNATE_AIRPORT',
-          'label': '备降机场'
+          'prop': 'address',
+          'label': '地址'
         },
         {
-          'prop': 'ESTIMATE_LAUNCH_TIME',
-          'label': '起飞时间'
+          'prop': 'food',
+          'label': '食物'
+        },
+        {
+          'prop': 'special',
+          'label': '特殊处理'
         }
       ], // 渲染的表头
       pageData: [],
@@ -166,10 +153,17 @@ export default {
       this.currentPage = 1
       this.pageData = data
     },
+    handleResetData (data) {
+      this.currentPage = 1
+      this.pageData = data
+      this.$refs.baseTable.$refs.multipleTable.clearSelection()
+    },
     handleTableEdit (data) {
+      console.log('editData', data)
       this.$emit('handleEditInfo', data)
     },
     handleTableDelete (data) {
+      console.log('delData', data)
       this.$emit('handleDeleteInfo', data)
     },
     insertInfo () {

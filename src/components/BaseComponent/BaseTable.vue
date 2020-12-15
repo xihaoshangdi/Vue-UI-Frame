@@ -17,8 +17,7 @@
           <el-table-column
             v-if="item.component"
             :key="item.prop"
-            :prop="item.prop"
-            :label="item.label"
+            v-bind="item"
           >
             <component
               :is="item.component"
@@ -28,8 +27,7 @@
           <el-table-column
             v-else
             :key="item.prop"
-            :prop="item.prop"
-            :label="item.label"
+            v-bind="item"
           />
         </slot>
       </template>
@@ -57,11 +55,7 @@ export default {
   },
   methods: {
     // 赋值选中的数组
-    handleSelectionChange (val) { this.multipleSelection = val },
-    // 编辑
-    handleEdit (index, row) { this.$emit('handleEdit', row) },
-    // 删除
-    handleDelete (index, row) { this.$emit('handleDelete', row) }
+    handleSelectionChange (val) { this.multipleSelection = val }
   }
 }
 </script>

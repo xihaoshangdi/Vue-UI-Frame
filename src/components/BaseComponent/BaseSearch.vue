@@ -44,9 +44,6 @@
             placeholder="选择时间范围"
           />
         </template>
-        <template v-else>
-          <slot :scope="{form:form,key:key,val:val}" />
-        </template>
       </div>
     </template>
     <div>
@@ -104,7 +101,7 @@ export default {
                 return Boolean(formHour * 60 + formMinute - barHour * 60 + barMinute)
               }
               default: {
-                return this.searchForm[attr].filtrate(bar, this.form[attr])
+                return true
               }
             }
           })
@@ -118,8 +115,7 @@ export default {
     },
     reset () {
       Object.keys(this.form).forEach(attr => { this.form[attr] = '' })
-      this.$parent.$refs.baseTable.$refs.multipleTable.clearSelection()
-      this.$emit('handleSearchData', this.sourceData)
+      this.$emit('handleResetData', this.sourceData)
     }
   }
 }
