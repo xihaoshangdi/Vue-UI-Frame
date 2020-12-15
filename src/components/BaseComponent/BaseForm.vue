@@ -76,10 +76,7 @@
         </el-form-item>
       </template>
     </el-form>
-    <div v-show="handle" class="operate">
-      <el-button type="primary" @click="verify">确认</el-button>
-      <el-button type="primary" @click="cancel">取消</el-button>
-    </div>
+    <slot :scope="Object.assign({},form)" />
   </div>
 
 </template>
@@ -89,10 +86,6 @@ import { checkObjNull, circuit } from '@/lib/unit'
 export default {
   name: 'BaseForm',
   props: {
-    handle: {
-      type: Boolean,
-      default: true
-    },
     formData: {
       // 表单的数据
       type: Object,
@@ -100,10 +93,6 @@ export default {
     },
     formHash: {
       type: Object,
-      default: () => {}
-    },
-    verifyForm: {
-      type: Function,
       default: () => {}
     }
   },
@@ -115,7 +104,6 @@ export default {
   },
   created () {
     const formHash = this.formHash
-
     const state = circuit(formHash)
     if (state) {
       const that = this
@@ -132,21 +120,11 @@ export default {
     }
   },
   methods: {
-    verify () {
-      try {
-        Object.keys(this.formHash).forEach(element => {
-          if (this.formHash[element].required && this.form[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
-        })
-        const temp = {}
-        Object.assign(temp, this.form) // 获取代理的原始对象form
-        const form = JSON.parse(JSON.stringify(temp)) // 对form进行深拷贝
-        this.verifyForm(form)
-        this.$emit('confirm', form)
-      } catch (e) {
-        this.$message.error(e.message)
-      }
-    },
-    cancel () { this.$emit('cancel') }
+    resetForm () {
+      Object.keys(this.form).forEach(attr => {
+        this.form[attr] = ''
+      })
+    }
   }
 }
 </script>
@@ -162,11 +140,7 @@ export default {
   font-weight: bold;
   color: #3b5681;
 }
-.operate{
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-}
+
 .el-form-item{
   .el-select,.el-input{
     width: 100%;

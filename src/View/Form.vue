@@ -1,12 +1,15 @@
 <template>
   <div class="container">
     <base-form
+      ref="baseForm"
       :form-data="formData"
       :form-hash="formHash"
-      :verify-form="verifyFn"
-      @confirm="submit"
-      @cancel="cancel"
-    />
+    >
+      <template v-slot="{scope}">
+        <el-button type="primary" @click="verify(scope)">确认</el-button>
+        <el-button type="primary" @click="cancel(scope)">取消</el-button>
+      </template>
+    </base-form>
   </div>
 </template>
 
@@ -82,8 +85,7 @@ export default {
           disabled: true,
           show: false
         }
-      },
-      verifyFn: (data) => {}
+      }
     }
   },
   methods: {
@@ -92,13 +94,16 @@ export default {
       const arr = [20, 19, 21, 21, 21, 22, 23, 23, 23, 23, 22, 22]
       return str.substr(month * 2 - (day < arr[month - 1] ? 2 : 0), 2) + '座'
     },
-    submit (data) {
-      this.$message.success('提交表单')
-      console.log('表单数据', data)
+    verify (scope) {
+      try {
+        Object.keys(this.formHash).forEach(element => {
+          if (this.formHash[element].required && scope[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
+        })
+      } catch (e) {
+        this.$message.error(e.message)
+      }
     },
-    cancel () {
-      this.$message.info('取消表单')
-    }
+    cancel () { this.$refs.baseForm.resetForm() }
   }
 }
 </script>
@@ -106,5 +111,10 @@ export default {
 <style scoped lang="scss">
 .container{
   max-width: 800px;
+}
+.operate{
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 </style>
