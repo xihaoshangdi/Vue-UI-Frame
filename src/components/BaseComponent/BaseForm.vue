@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="box">
     <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
       <template v-for="(val,key) in formData">
         <el-form-item
-          v-show="formHash[key].show||true"
+          v-show="formHash[key].show===undefined?true:formHash[key].show"
           v-if="formHash[key]"
           :key="key"
           :label="formHash[key].label"
@@ -11,7 +11,7 @@
           <!--普通文本-->
           <template v-if="formHash[key].type==='text'">
             <el-input
-              v-show="formHash[key].show||true"
+              v-show="formHash[key].show===undefined?true:formHash[key].show"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
             />
@@ -19,7 +19,7 @@
           <!--单选-->
           <template v-else-if="formHash[key].type==='radio'">
             <el-select
-              v-show="formHash[key].show||true"
+              v-show="formHash[key].show===undefined?true:formHash[key].show"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
               clearable
@@ -36,7 +36,7 @@
           <!--多选-->
           <template v-else-if="formHash[key].type==='checkbox'">
             <el-select
-              v-show="formHash[key].show||true"
+              v-show="formHash[key].show===undefined?true:formHash[key].show"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
               clearable
@@ -54,7 +54,7 @@
           <!--日期-->
           <template v-else-if="formHash[key].type==='datetime'">
             <el-date-picker
-              v-show="formHash[key].show||true"
+              v-show="formHash[key].show===undefined?true:formHash[key].show"
               v-model="form[key]"
               type="datetime"
               :disabled="formHash[key].disabled"
@@ -65,7 +65,7 @@
           <!--时间-->
           <template v-else-if="formHash[key].type==='duration'">
             <el-time-picker
-              v-show="formHash[key].show||true"
+              v-show="formHash[key].show===undefined?true:formHash[key].show"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
               format="HH:mm"
@@ -159,15 +159,13 @@ export default {
   grid-column-gap: 20px;
   padding: 20px;
   font-size: 14px;
-  font-family: PingFang-SC;
   font-weight: bold;
   color: #3b5681;
-  max-width: 700px;
 }
 .operate{
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: flex-end;
 }
 .el-form-item{
   .el-select,.el-input{

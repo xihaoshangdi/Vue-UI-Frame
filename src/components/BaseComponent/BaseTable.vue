@@ -4,40 +4,35 @@
       ref="multipleTable"
       :data="tableData"
       tooltip-effect="dark"
-      :row-key="(row)=>row.UUID"
       height="490"
       @selection-change="handleSelectionChange"
     >
       <el-table-column
         header-align="center"
-        :reserve-selection="true"
         type="selection"
         width="75"
       />
       <template v-for="item in config">
-        <el-table-column
-          v-if="item.special"
-          :key="item.prop"
-          :prop="item.prop"
-          :label="item.label"
-        >
-          <template slot-scope="scope">
-            {{ item.fn(scope.row[item.prop]) }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          v-else
-          :key="item.prop"
-          :prop="item.prop"
-          :label="item.label"
-        />
+        <slot :name="item.prop">
+          <el-table-column
+            v-if="item.component"
+            :key="item.prop"
+            :prop="item.prop"
+            :label="item.label"
+          >
+            <component
+              :is="item.component"
+              :data="item"
+            />
+          </el-table-column>
+          <el-table-column
+            v-else
+            :key="item.prop"
+            :prop="item.prop"
+            :label="item.label"
+          />
+        </slot>
       </template>
-      <el-table-column prop="edit" label="操作" width="180">
-        <template slot-scope="scope">
-          <el-button icon="el-icon-edit" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-          <el-button icon="el-icon-delete" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-        </template>
-      </el-table-column>
     </el-table>
   </div>
 </template>

@@ -36,6 +36,17 @@
             end-placeholder="结束日期"
           />
         </template>
+        <template v-else-if="val.type==='duration'">
+          <el-time-picker
+            v-model="form[key]"
+            :value-format="val.format"
+            :format="val.format"
+            placeholder="选择时间范围"
+          />
+        </template>
+        <template v-else>
+          <slot :scope="{form:form,key:key,val:val}" />
+        </template>
       </div>
     </template>
     <div>
@@ -87,8 +98,13 @@ export default {
               case 'timeLimit': {
                 return dayjs(bar[attr]).isBetween(dayjs(this.form[attr][0]), dayjs(this.form[attr][1]), null, '[)')
               }
+              case 'duration': {
+                const [formHour, formMinute] = this.form[attr].split(':')
+                const [barHour, barMinute] = bar[attr].split(':')
+                return Boolean(formHour * 60 + formMinute - barHour * 60 + barMinute)
+              }
               default: {
-                console.log('------', type)
+                return this.searchForm[attr].filtrate(bar, this.form[attr])
               }
             }
           })

@@ -1,0 +1,23 @@
+.rightContainer {
+    display: inline-block;
+    margin: 3px;
+    background-color: #fff;
+    min-width: 100px;
+    border: 1px solid #ebeef5;
+    border-radius: 4px;
+    box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
+    text-align: center;
+    padding: 10px 0;
+}
+.rightContainer-item {
+    font-size: 14px;
+    cursor: pointer;
+    line-height: 36px;
+    padding: 0 20px;
+    margin: 0;
+    color: #606266;
+}
+.rightContainer-item:hover {
+    background-color: #ecf5ff;
+    color: #409eff;
+}

@@ -1,7 +1,20 @@
 <template>
   <div>
-    <base-search :search-form="searchForm" :source-data="sourceData" />
-    <base-table :table-data="pageData" :config="config" />
+    <base-search :search-form="searchForm" :source-data="sourceData">
+      <template v-slot="{scope}">
+        <div>{{ scope }}</div>
+        <el-input v-model="scope.form[scope.key]" placeholder="请输入内容" />
+      </template>
+    </base-search>
+    <base-table :table-data="pageData" :config="config">
+      <template #PLAN_TYPE>
+        <el-table-column>
+          <template slot-scope="{row,$index}">
+            <div>{{ row }}-{{ $index }}</div>
+          </template>
+        </el-table-column>
+      </template>
+    </base-table>
     <el-pagination
       :current-page.sync="currentPage"
       :page-size="pageSize"
@@ -19,6 +32,7 @@ export default {
   components: { BaseTable, BaseSearch },
   data () {
     return {
+      xxx: '',
       // BaseSearch
       searchForm: {
         JOB_DATE: {
@@ -61,6 +75,12 @@ export default {
           label: '起飞时间',
           type: 'timeBefore',
           format: 'yyyy/MM/dd hh:mm'
+        },
+        YYYY: {
+          label: '发送时间范围',
+          type: 'duration',
+          vague: false,
+          format: 'hh:mm'
         }
       }, // 查询的表单对象
       sourceData: [
@@ -102,10 +122,6 @@ export default {
       ], // 数据库的全部数据
       // BaseTable
       config: [
-        {
-          'prop': 'JOB_DATE',
-          'label': '计划日期'
-        },
         {
           'prop': 'PLAN_TYPE',
           'label': '计划类型'
