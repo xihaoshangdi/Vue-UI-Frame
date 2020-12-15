@@ -8,7 +8,7 @@
     />
     <base-table
       ref="baseTable"
-      :table-data="pageData"
+      :table-data="tableData"
       :config="config"
     >
       <template #special>
@@ -129,7 +129,7 @@ export default {
       pageData: [],
       // BasePager
       currentPage: 1, // 当前页码
-      pageSize: 5 // 每页个数
+      pageSize: 2 // 每页个数
     }
   },
   computed: {
@@ -165,12 +165,6 @@ export default {
     handleTableDelete (data) {
       console.log('delData', data)
       this.$emit('handleDeleteInfo', data)
-    },
-    insertInfo () {
-      this.$emit('insertInfo')
-    },
-    batchDelet () {
-      this.$emit('batchDelet', this.$refs.baseTable.multipleSelection)
     }
   }
 }
