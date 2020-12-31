@@ -8,12 +8,24 @@ Vue.config.productionTip = false
 
 import RightClick from '@/lib/RightClick'
 
-Vue.prototype.$RightClick = RightClick
-
 // 注册全局指令
 Vue.directive('rightClick', {
-  bind: (el, binding) => {
-
+  inserted: function (el, binding, vnode) {
+    const { value } = binding
+    el.addEventListener('contextmenu', (event) => {
+      event.preventDefault()
+      RightClick({ // 传递位置即可
+        menuGroup: value.map(item => item.text),
+        coordinate: { rect: el.getBoundingClientRect(), clientX: event.clientX, clientY: event.clientY }
+      }).then((data) => {
+        value.some(item => {
+          if (item.text === data) {
+            item.handle()
+            return true
+          }
+        })
+      })
+    })
   }
 })
 
