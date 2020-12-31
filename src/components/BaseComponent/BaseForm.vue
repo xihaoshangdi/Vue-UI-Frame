@@ -1,7 +1,7 @@
 <template>
   <div class="box">
     <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
-      <template v-for="(val,key) in formData">
+      <template v-for="(val,key) in formHash">
         <el-form-item
           v-show="formHash[key].show===undefined?true:formHash[key].show"
           v-if="formHash[key]"
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import { checkObjNull, circuit } from '@/lib/unit'
+import { circuit } from '@/lib/unit'
 export default {
   name: 'BaseForm',
   props: {
@@ -116,7 +116,7 @@ export default {
         }
       }
       this.form = new Proxy(obj, handler)
-      Object.assign(this.form, checkObjNull(this.formData).NonEmptyObj)
+      Object.keys(formHash).forEach(item => { if (this.formData[item]) this.form[item] = this.formData[item] })
     }
   },
   methods: {

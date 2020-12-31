@@ -16,7 +16,13 @@
       :config="config"
       @handleEdit="handleTableEdit"
       @handleDelete="handleTableDelete"
-    />
+    >
+      <template v-for="(_, slot) in $slots">
+        <template :slot="slot">
+          <slot :name="slot" />
+        </template>
+      </template>
+    </base-table>
     <el-pagination
       :current-page.sync="currentPage"
       :page-size="pageSize"

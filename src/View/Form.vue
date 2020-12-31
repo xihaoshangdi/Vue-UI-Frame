@@ -27,7 +27,8 @@ export default {
         week: '',
         age: '',
         education: '',
-        adult: '成人'
+        adult: '成人',
+        xxx: 'xxxx'
       },
       formHash: {
         name: {
