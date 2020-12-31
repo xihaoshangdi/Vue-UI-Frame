@@ -29,6 +29,13 @@ export default {
   methods: {
     renderPopup (callback) {
       this.showFlag = true
+      this.excess = () => {
+        typeof callback === 'function' && callback.call(this, this)
+        this.reject()
+        this.hide()
+      }
+      window.addEventListener('mousewheel', this.excess, { once: true })
+      window.addEventListener('click', (event) => { if (!this.$el.contains(event.target)) { this.excess } }, { once: true })
       return new Promise((resolve, reject) => { // 返回Promise
         this.reject = reject // 给取消按钮使用
         this.resolve = resolve // 给确认按钮使用

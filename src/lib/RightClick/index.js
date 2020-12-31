@@ -15,17 +15,18 @@ export default options => { // 导出一个方法，接受配置参数
     console.log('初始化弹窗实例')
     initInstance() // 挂载
   }
-  // Object.assign(newInstance, options)
-  newInstance.$nextTick(() => {
-    const { coordinate } = options
-    const { rect, clientX, clientY } = coordinate
-    const { right, bottom } = rect
-    const { width, height } = newInstance.$el.getBoundingClientRect()
-    const realX = clientX + width > right ? right - width : clientX
-    const realY = clientY + height > bottom ? bottom - height : clientY
-    options.position = { left: `${realX}px`, top: `${realY}px` }
-    Object.assign(newInstance, options)
-  })
+  const { coordinate } = options
+  if (coordinate) {
+    newInstance.$nextTick(() => {
+      const { rect, clientX, clientY } = coordinate
+      const { right, bottom } = rect
+      const { width, height } = newInstance.$el.getBoundingClientRect()
+      const realX = clientX + width > right ? right - width : clientX
+      const realY = clientY + height > bottom ? bottom - height : clientY
+      options.position = { left: `${realX}px`, top: `${realY}px` }
+      Object.assign(newInstance, options)
+    })
+  }
   // 实例化后newInstance就是一个对象了，所以data内的数据会
   // 挂载到this下，传入一个对象与之合并
 
