@@ -1,4 +1,4 @@
-# BaseSearch
+# 表单组件
 基础的查询组件
 接收两个参数
 searchForm

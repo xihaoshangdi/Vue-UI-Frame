@@ -6,7 +6,7 @@
       :form-hash="formHash"
     >
       <template v-slot="{scope}">
-        <el-button type="primary" @click="verify(scope)">确认</el-button>
+        <el-button type="primary" @click="confirm(scope)">确认</el-button>
         <el-button type="primary" @click="cancel(scope)">取消</el-button>
       </template>
     </base-form>
@@ -83,8 +83,8 @@ export default {
         adult: {
           label: '身份',
           type: 'text',
-          disabled: true,
-          show: false
+          disabled: true
+
         }
       }
     }
@@ -95,14 +95,8 @@ export default {
       const arr = [20, 19, 21, 21, 21, 22, 23, 23, 23, 23, 22, 22]
       return str.substr(month * 2 - (day < arr[month - 1] ? 2 : 0), 2) + '座'
     },
-    verify (scope) {
-      try {
-        Object.keys(this.formHash).forEach(element => {
-          if (this.formHash[element].required && scope[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
-        })
-      } catch (e) {
-        this.$message.error(e.message)
-      }
+    confirm (scope) {
+      this.$refs.baseForm.verify(scope)
     },
     cancel () { this.$refs.baseForm.resetForm() }
   }

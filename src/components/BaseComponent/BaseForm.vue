@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
       <template v-for="(val,key) in formHash">
         <el-form-item
-          v-show="formHash[key].show===undefined?true:formHash[key].show"
+          v-show="handleShow(formHash[key])"
           v-if="formHash[key]"
           :key="key"
           :label="formHash[key].label"
@@ -11,7 +11,7 @@
           <!--普通文本-->
           <template v-if="formHash[key].type==='text'">
             <el-input
-              v-show="formHash[key].show===undefined?true:formHash[key].show"
+              v-show="handleShow(formHash[key])"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
             />
@@ -19,7 +19,7 @@
           <!--单选-->
           <template v-else-if="formHash[key].type==='radio'">
             <el-select
-              v-show="formHash[key].show===undefined?true:formHash[key].show"
+              v-show="handleShow(formHash[key])"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
               clearable
@@ -36,7 +36,7 @@
           <!--多选-->
           <template v-else-if="formHash[key].type==='checkbox'">
             <el-select
-              v-show="formHash[key].show===undefined?true:formHash[key].show"
+              v-show="handleShow(formHash[key])"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
               clearable
@@ -54,7 +54,7 @@
           <!--日期-->
           <template v-else-if="formHash[key].type==='datetime'">
             <el-date-picker
-              v-show="formHash[key].show===undefined?true:formHash[key].show"
+              v-show="handleShow(formHash[key])"
               v-model="form[key]"
               type="datetime"
               :disabled="formHash[key].disabled"
@@ -65,7 +65,7 @@
           <!--时间-->
           <template v-else-if="formHash[key].type==='duration'">
             <el-time-picker
-              v-show="formHash[key].show===undefined?true:formHash[key].show"
+              v-show="handleShow(formHash[key])"
               v-model="form[key]"
               :disabled="formHash[key].disabled"
               format="HH:mm"
@@ -78,7 +78,6 @@
     </el-form>
     <slot :scope="Object.assign({},form)" />
   </div>
-
 </template>
 
 <script>
@@ -111,7 +110,7 @@ export default {
       const handler = {
         set: function name (obj, prop, value) {
           obj[prop] = value
-          if (formHash[prop].correlate) formHash[prop].correlate(that.form)
+          if (formHash[prop] && formHash[prop].correlate) formHash[prop].correlate(that.form)
           return true
         }
       }
@@ -120,6 +119,18 @@ export default {
     }
   },
   methods: {
+    handleShow (val) {
+      return val.show === undefined ? true : val.show
+    },
+    verify (scope) {
+      try {
+        Object.keys(this.formHash).forEach(element => {
+          if (this.formHash[element].required && scope[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
+        })
+      } catch (e) {
+        this.$message.error(e.message)
+      }
+    },
     resetForm () {
       Object.keys(this.form).forEach(attr => {
         this.form[attr] = ''

@@ -70,6 +70,7 @@ export function circuit (formHash) {
       })
     }
   })
+  if (Adjacency.length === 0) return true
   const stack = new Map()
   const currentNode = Adjacency[0]
   const dfs = (node) => {
