@@ -142,8 +142,10 @@ export default {
         Object.keys(this.formHash).forEach(element => {
           if (this.formHash[element].required && scope[element] === '') throw new Error(`${this.formHash[element].label}不允许为空`)
         })
+        return true
       } catch (e) {
         this.$message.error(e.message)
+        return false
       }
     },
     resetForm () {
