@@ -75,17 +75,24 @@ export default {
             else data.education = '博士'
           }
         },
+        introduce: {
+          label: '介绍',
+          type: 'textarea',
+          disabled: true
+        },
         education: {
           label: '学历',
           type: 'text',
           disabled: true
         },
+
         adult: {
           label: '身份',
           type: 'text',
           disabled: true
 
         }
+
       }
     }
   },

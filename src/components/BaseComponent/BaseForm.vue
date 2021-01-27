@@ -1,82 +1,89 @@
 <template>
   <div class="box">
-    <el-form ref="form" :model="form" :label-position="labelPosition" label-width="auto" class="container">
-      <template v-for="(val,key) in formHash">
-        <el-form-item
-          v-show="handleShow(formHash[key])"
-          v-if="formHash[key]"
-          :key="key"
-          :label="formHash[key].label"
-        >
-          <!--普通文本-->
-          <template v-if="formHash[key].type==='text'">
-            <el-input
-              v-show="handleShow(formHash[key])"
-              v-model="form[key]"
-              :disabled="formHash[key].disabled"
-            />
-          </template>
-          <!--单选-->
-          <template v-else-if="formHash[key].type==='radio'">
-            <el-select
-              v-show="handleShow(formHash[key])"
-              v-model="form[key]"
-              :disabled="formHash[key].disabled"
-              clearable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in formHash[key].options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+    <el-scrollbar>
+      <form class="container" :style="formStyle">
+        <div v-for="(val,key) in formHash" v-show="handleShow(formHash[key])" :key="key" class="form__item">
+          <div class="form__item__header">
+            <span>{{ formHash[key].label }}</span>
+          </div>
+          <div class="form__item__content">
+            <!--普通文本-->
+            <template v-if="formHash[key].type==='text'">
+              <el-input
+                v-model="form[key]"
+                :disabled="formHash[key].disabled"
               />
-            </el-select>
-          </template>
-          <!--多选-->
-          <template v-else-if="formHash[key].type==='checkbox'">
-            <el-select
-              v-show="handleShow(formHash[key])"
-              v-model="form[key]"
-              :disabled="formHash[key].disabled"
-              clearable
-              multiple
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in formHash[key].options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
+            </template>
+            <!--单选-->
+            <template v-else-if="formHash[key].type==='radio'">
+              <el-select
+                v-model="form[key]"
+                :disabled="formHash[key].disabled"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in formHash[key].options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </template>
+            <!--多选-->
+            <template v-else-if="formHash[key].type==='checkbox'">
+              <el-select
+                v-model="form[key]"
+                :disabled="formHash[key].disabled"
+                clearable
+                multiple
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in formHash[key].options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
+            </template>
+            <!--日期-->
+            <template v-else-if="formHash[key].type==='datetime'">
+              <el-date-picker
+                v-model="form[key]"
+                type="datetime"
+                :disabled="formHash[key].disabled"
+                :format="formHash[key].format"
+                :value-format="formHash[key].valueFormat"
               />
-            </el-select>
-          </template>
-          <!--日期-->
-          <template v-else-if="formHash[key].type==='datetime'">
-            <el-date-picker
-              v-show="handleShow(formHash[key])"
-              v-model="form[key]"
-              type="datetime"
-              :disabled="formHash[key].disabled"
-              :format="formHash[key].format"
-              :value-format="formHash[key].valueFormat"
-            />
-          </template>
-          <!--时间-->
-          <template v-else-if="formHash[key].type==='duration'">
-            <el-time-picker
-              v-show="handleShow(formHash[key])"
-              v-model="form[key]"
-              :disabled="formHash[key].disabled"
-              format="HH:mm"
-              value-format="HH:mm"
-              placeholder="请输入时间"
-            />
-          </template>
-        </el-form-item>
-      </template>
-    </el-form>
-    <slot :scope="Object.assign({},form)" />
+            </template>
+            <!--时间-->
+            <template v-else-if="formHash[key].type==='duration'">
+              <el-time-picker
+                v-model="form[key]"
+                :disabled="formHash[key].disabled"
+                format="HH:mm"
+                value-format="HH:mm"
+                placeholder="请输入时间"
+              />
+            </template>
+            <!--文本框-->
+            <template v-else-if="formHash[key].type==='textarea'">
+              <el-input
+                v-model="form[key]"
+                :autosize="{ minRows: 2, maxRows: 3}"
+                placeholder="请输入内容"
+                type="textarea"
+              />
+            </template>
+          </div>
+        </div>
+      </form>
+    </el-scrollbar>
+    <div class="formSlot">
+      <slot :scope="Object.assign({},form)" />
+    </div>
+
   </div>
 </template>
 
@@ -93,6 +100,14 @@ export default {
     formHash: {
       type: Object,
       default: () => {}
+    },
+    formStyle: {
+      type: Object,
+      default: () => {
+        return {
+          height: `300px`
+        }
+      }
     }
   },
   data () {
@@ -151,9 +166,17 @@ export default {
   font-weight: bold;
   color: #3b5681;
 }
-
-.el-form-item{
-  .el-select,.el-input{
+.formSlot{
+  padding-top: 1em;
+}
+.form__item{
+  &__header{
+    padding: 5px;
+  }
+  &::v-deep textarea{
+    resize: none;
+  }
+  .el-input{
     width: 100%;
   }
 }
