@@ -123,10 +123,14 @@ export default {
       const that = this
       const obj = Object.assign({}, this.formData)
       const handler = {
-        set: function name (obj, prop, value) {
+        set: function (obj, prop, value) {
           obj[prop] = value
           if (formHash[prop] && formHash[prop].correlate) formHash[prop].correlate(that.form)
           return true
+        },
+        get: function (obj, prop) {
+          if (formHash[prop] && formHash[prop].mapping) return formHash[prop].mapping(obj[prop])
+          return obj[prop]
         }
       }
       this.form = new Proxy(obj, handler)

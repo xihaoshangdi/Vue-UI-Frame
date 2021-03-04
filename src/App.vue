@@ -25,7 +25,7 @@ export default {
   data () {
     return {
       //
-      activeName: 'click'
+      activeName: 'form'
     }
   }
 }

@@ -44,10 +44,10 @@ export default {
           valueFormat: 'yyyy/MM/dd HH:mm:ss',
           dependProp: ['constellation', 'week', 'age'],
           correlate: (data) => {
-            const brith = new Date(data.birth)
-            data.constellation = this.getAstro(brith.getMonth() + 1, brith.getDay())
-            data.week = `星期${'一二三四五六日'[brith.getDay() + 1]}`
-            data.age = new Date().getFullYear() - brith.getFullYear()
+            const birth = new Date(data.birth)
+            data.constellation = this.getAstro(birth.getMonth() + 1, birth.getDay())
+            data.week = `星期${'一二三四五六日'[birth.getDay() + 1]}`
+            data.age = new Date().getFullYear() - birth.getFullYear()
           }
         },
         constellation: {
